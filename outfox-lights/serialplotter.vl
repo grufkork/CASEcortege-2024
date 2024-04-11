@@ -285,7 +285,7 @@
               <Choice Kind="NodeFlag" Name="Node" Fixed="true" />
               <Choice Kind="ProcessAppFlag" Name="Renderer" />
             </p:NodeReference>
-            <Pin Id="BAfsjv2DveeQAPU6dyj9qh" Name="Bounds" Kind="InputPin" DefaultValue="-8, -8, 1936, 1216" />
+            <Pin Id="BAfsjv2DveeQAPU6dyj9qh" Name="Bounds" Kind="InputPin" DefaultValue="953, 453, 974, 754" />
             <Pin Id="GB3ELFmU28BLvv3dsIeR53" Name="Input" Kind="InputPin" />
             <Pin Id="EdzOiSb5gGnQN23M3ysJ6j" Name="Color" Kind="InputPin" />
             <Pin Id="CJAdaFrQndYLDXvkRIQscM" Name="Clear" Kind="InputPin" />
@@ -427,7 +427,7 @@
             </p:ValueBoxSettings>
           </Pad>
           <Pad Id="EH0SzbTZBB3MyL5X2tv4tB" Comment="On Data" Bounds="1134,315,35,35" ShowValueBox="true" isIOBox="true" />
-          <Pad Id="KKkGY2EVMVrO00ozWlhE8X" Comment="" Bounds="443,638,63,15" ShowValueBox="true" isIOBox="true" Value="509">
+          <Pad Id="KKkGY2EVMVrO00ozWlhE8X" Comment="" Bounds="443,638,63,15" ShowValueBox="true" isIOBox="true" Value="508.5">
             <p:TypeAnnotation LastCategoryFullName="Primitive" LastDependency="VL.CoreLib.vl">
               <Choice Kind="TypeFlag" Name="Float32" />
             </p:TypeAnnotation>
@@ -469,10 +469,14 @@
             <Pin Id="STwl764rXHKQHQ4tHgAsvw" Name="Value" Kind="InputPin" />
             <Pin Id="DIeMtjhRpRaLm3HQCsnR1t" Name="Value" Kind="OutputPin" />
           </Node>
-          <Pad Id="MOl7yE0m9kTMmQUJ9ruSe3" Comment="" Bounds="1067,687,35,15" ShowValueBox="true" isIOBox="true" Value="0.99">
+          <Pad Id="MOl7yE0m9kTMmQUJ9ruSe3" Comment="" Bounds="1067,687,91,15" ShowValueBox="true" isIOBox="true" Value="0.9949">
             <p:TypeAnnotation LastCategoryFullName="Primitive" LastDependency="VL.CoreLib.vl">
               <Choice Kind="TypeFlag" Name="Float32" />
             </p:TypeAnnotation>
+            <p:ValueBoxSettings>
+              <p:precision p:Type="Int32">4</p:precision>
+              <p:stepsize p:Type="Single">0.0001</p:stepsize>
+            </p:ValueBoxSettings>
           </Pad>
           <Node Bounds="947,879,65,19" Id="LkC7kzcsdWAOD3mcRdkEuV">
             <p:NodeReference LastCategoryFullName="Collections.Spread" LastDependency="VL.CoreLib.vl">
@@ -699,7 +703,6 @@
         <Link Id="TYKsGrJnVSlLROdXfihemm" Ids="Rq6SokluMPQPNxJBQ8TPpq,STwl764rXHKQHQ4tHgAsvw" />
         <Link Id="QMXfyvVkN47MGg4oRDcz0j" Ids="DIeMtjhRpRaLm3HQCsnR1t,NB9X8zgS0pBP6OTPYtQiH3" />
         <Link Id="ALqq9wVmLkFOrXC3Hfgru9" Ids="TTbZJVs0SkENHYui90TEkW,EOPoX1fBMQvPIccbRD9KVQ" />
-        <Link Id="GWUlFzegYG1PRNjBZoLXC2" Ids="HdSR5cpBt41OEsPKa1isXX,LDmcvKB1f9dOFLzMEXvx8L" />
         <Link Id="DBQiU8MZ0taNsJgDzFMvw2" Ids="OdA2xGnHqo9MfPqClO393c,LUpgdzZEAxdObpnt0TrLJy" />
         <Link Id="GdjgQ4oVdEJLetFgLi3tc6" Ids="MOl7yE0m9kTMmQUJ9ruSe3,Q83YvYXZl3BO5l3uz5xfqw" />
         <Link Id="Ur7uMi4w5GsLOuUcxQzxbn" Ids="Rq6SokluMPQPNxJBQ8TPpq,JYx7SSYqK2cL5MTF7q9D8j" />
@@ -733,6 +736,7 @@
         <Link Id="JhbbIQRSbw9PB5qVLLB5Aa" Ids="L3obY4HrrINMiXDaNeHyAa,DSjVibjwvuZQBH2dD9yuXd" />
         <Link Id="BESbPIMnxXoPLnJU64ibhc" Ids="BgYhwgEnqAWO3ny4IGK7hM,Vmwgg0BvC6eQFh9U7tQu8X" />
         <Link Id="Hqc3MZkoAYcOegf8qLwbRe" Ids="GTO6o18mZQNPbDKfPFOiC0,SONf2wwwvhMP5ROkwY8EUD" />
+        <Link Id="MsUPXLOLIf7P7axoUYRdvc" Ids="HdSR5cpBt41OEsPKa1isXX,LDmcvKB1f9dOFLzMEXvx8L" />
       </Patch>
     </Node>
   </Patch>

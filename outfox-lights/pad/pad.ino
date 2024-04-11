@@ -14,6 +14,7 @@ bool key[] = {false, false, false, false};
 int cooldown[] = {0, 0, 0, 0};
 
 float avgs[] = {0.0f, 0.0f, 0.0f, 0.0f};
+float maxs[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
 int val;
 
@@ -26,14 +27,21 @@ void loop() {
   for(int i = 0; i < 4; i++){
     val = analogRead(pins[i]);
 
-    avgs[i] = (avgs[i]+val-509)*0.99f;
+    avgs[i] = (avgs[i]+val-509)*0.9f;
 
     /*if(cooldown[i] > 0){
       cooldown[i]--;
       continue;
     }*/
 
-    if(avgs[i] >= 3000.0f && !key[i]){
+    if(key[i]){
+      if(maxs[i] < avgs[i]){
+        maxs[i] = avgs[i];
+      }
+    }
+
+    if(avgs[i] >= 450.0f && !key[i]){
+      maxs[i] = 450.0f;
       key[i] = true;
       Serial.write(0b10000000 + i);
       Serial.flush();
@@ -42,7 +50,7 @@ void loop() {
       }else{
         cooldown[i] ++;
       }*/
-    }else if(avgs[i] <= -4000.0f && key[i]){
+    }else if(key[i] && avgs[i] <= -170.0f * maxs[i] / 450.0f ){
       key[i] = false;
       Serial.write(0b00000000 + i);
       Serial.flush();
@@ -50,9 +58,8 @@ void loop() {
       }else{
         cooldown[i] ++;
       }*/
-    }else{
-      cooldown[i]=0;
     }
+    
   }
 
   

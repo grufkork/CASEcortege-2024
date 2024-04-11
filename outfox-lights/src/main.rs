@@ -11,6 +11,7 @@ use inputbot::{KeySequence, KeybdKey::*, MouseButton::*};
 
 fn main(){
     thread::spawn(||{
+        return;
         let keys = vec![UpKey, LeftKey, RightKey,DownKey , EnterKey, EscapeKey];
 
 
