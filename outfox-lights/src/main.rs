@@ -5,6 +5,7 @@ use std::thread;
 use std::{thread::sleep, time::Duration};
 use std::net::{UdpSocket, SocketAddr};
 
+use serialport::UsbPortInfo;
 use toy_arms::external::{read, Process};
 use inputbot::{KeySequence, KeybdKey::*, MouseButton::*};
 
@@ -19,8 +20,18 @@ fn main(){
 
 
         let ports = serialport::available_ports().expect("No ports found!");
-        let portname = ports.iter().find(|x| x.port_name == "COM3").unwrap().port_name.clone();
         // println!("{:?}", ports);
+        let portname = ports.iter().find(|x| match &x.port_type {
+            serialport::SerialPortType::UsbPort(info) => {
+                if let Some(product) = &info.product{
+                    product.contains("USB-SERIAL")
+                }else{
+                    false
+                }
+            },
+            _ => false
+        } ).unwrap().port_name.clone();
+
         let mut port = serialport::new(portname, 115200).timeout(Duration::from_millis(1000)).open().expect("Port open failed");
         port.write_data_terminal_ready(true);
 
