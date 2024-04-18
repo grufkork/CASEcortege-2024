@@ -50,14 +50,50 @@ void loop() {
     }
 
     if(buttonPressed > 3200){
+        
 
         
-        data.motorA = map(analogRead(MOTORA_PIN), 0, 4095, 0, 127);
-        data.motorB = map(analogRead(MOTORB_PIN), 0, 4095, 0, 127);
-        data.forward = 1;
+        int motorA_val = analogRead(MOTORA_PIN);
+        int motorB_val = analogRead(MOTORB_PIN);
+
+
+        if(motorA_val > 50){
+            //map and constraon
+        }
+        //same for motor b
+
+
+        //check if below 20 then map for reverse, and change forward = ??
+
+
+        //then this
+        
+        if(motorA_val > 20 && motorA_val < 50){
+            data.motorA = 0;
+        }
+        if(motorB_val > 20 && motorB_val < 50){
+            data.motorA = 0;
+        }
+
+
+        data.motorA = map(motorA_val, 0, 4095, 0, 127);
+        data.motorB = map(motorB_val, 0, 4095, 0, 127);
+        
         // map and constrain the values to -127 to 127
         data.motorA = constrain(data.motorA, 0, 127);
         data.motorB = constrain(data.motorB, 0, 127);
+        
+        data.forward = 1;
+
+
+        //Apply deadzone, and choose whether to go forwards or backwards
+
+        
+
+
+    
+
+
     }
     else{
         data.motorA = 0;
