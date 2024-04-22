@@ -96,9 +96,10 @@ void loop() {
 
         //if one of the motors are set to go forward and the other is set to go backwards, we stop both motors
         }
-        if(motorA_val < bottomdeadzone && motorB_val > topdeadzone || motorA_val > topdeadzone && motorB_val < bottomdeadzone){
+        if(motorA_val < bottomdeadzone && BisDead || AisDead && motorB_val < bottomdeadzone){
             data.forward = 0;
         }
+
 
 
 
