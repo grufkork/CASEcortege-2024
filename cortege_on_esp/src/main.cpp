@@ -1,17 +1,16 @@
 #include <Arduino.h>
 #include <SabertoothSimplified.h>
-#include <SPI.h>    
-
+#include <SPI.h> 
+#include "ESPNowW.h"   
+#include <WiFi.h>
 //CAR STUFF -----------------------------------------
 int throttle, brake, steering;
 
 //define potentiometer pins
-const int THROTTLE_PIN = A4; 
-const int STEERING_PIN = A5;
-
-int throttle_reading, steering_reading;
 
 
+
+int forward;
 float motorA_speed = 0;
 float motorB_speed = 0;
 float motorA_speed_desired, motorB_speed_desired;
@@ -26,48 +25,78 @@ SabertoothSimplified DRIVER;
 
 //COMMUNICATION STUFF ------------------------------
 
+//mac address of the receiver
+uint8_t mac[] = {0x84,0xCC,0xA8,0x60,0x6F,0xC4};
+//ESPNowW espNow;
+//--------------------------------------------------
+//msg structure
+struct data{
+    byte forward;
+    byte motorA;
+    byte motorB;
+} data;
 
-void setup() {
-  // intital setup
-  //SabertoothTXPinSerial.begin(9600);
-  Serial.begin(9600);
-  // CALIBRATION
-  pinMode(THROTTLE_PIN, INPUT);
-  pinMode(STEERING_PIN, INPUT);
+
+//callback function
+void onDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+  memcpy(&data, incomingData, sizeof(data));
+  forward = data.forward;
+  motorA_speed_desired = data.motorA;
+  motorB_speed_desired = data.motorB;
+
 
 }
 
+
+void setup() {
+
+  Serial.begin(9600);
+  //COMMUNICATION SETUP
+
+
+    WiFi.mode(WIFI_MODE_STA);
+
+    ESPNow.set_mac(mac);
+    WiFi.disconnect();
+    ESPNow.init();
+    ESPNow.reg_recv_cb(onDataRecv);
+}
+
+  // intital setup
+  //SabertoothTXPinSerial.begin(9600);
+  // CALIBRATION
 
 
 void loop() {
-
   previous_motorA_speed = motorA_speed;
   previous_motorB_speed = motorB_speed;
+  if(forward == 2) {
+    motorA_speed_desired = motorA_speed_desired;
+    motorB_speed_desired = motorB_speed_desired;
+  }
+  else if(forward == 1){
+    motorA_speed_desired = -motorA_speed_desired;
+    motorB_speed_desired = -motorB_speed_desired;
 
-  throttle_reading = map(analogRead(THROTTLE_PIN), 0, 1023, -127, 127);
-  steering_reading = map(analogRead(STEERING_PIN), 0, 1023, -127, 127);
-  //constrain the values
-  throttle_reading = constrain(throttle_reading, -127, 127);
-  steering_reading = constrain(steering_reading, -127, 127);
+  }
+  else{
+    motorA_speed_desired = 0;
+    motorB_speed_desired = 0;
+  }
 
-  motorA_speed_desired = throttle_reading - steering_reading;
-  motorB_speed_desired = throttle_reading + steering_reading;
-  
-  Serial.println(throttle_reading);
-
-  motorA_speed += (motorA_speed_desired-motorA_speed)*acceleration_constant;
-  motorB_speed += (motorB_speed_desired-motorB_speed)*acceleration_constant;
-  
- 
-
-  DRIVER.motor(1, motorA_speed);
-  DRIVER.motor(2, motorB_speed);
-
-  delay(10);
+    motorA_speed += (motorA_speed_desired-motorA_speed)*acceleration_constant;
+    motorB_speed += (motorB_speed_desired-motorB_speed)*acceleration_constant;
     
+    // Serial.println(motorA_speed);
+    // Serial.println(motorB_speed);
+    // DRIVER.motor(1, motorA_speed);
+    // DRIVER.motor(2, motorB_speed);
+    Serial.println(motorA_speed);
+    delay(10);
+  
+
   
   
 
 }
-
 
