@@ -26,7 +26,7 @@ SabertoothSimplified DRIVER;
 //COMMUNICATION STUFF ------------------------------
 
 //mac address of the receiver
-uint8_t mac[] = {0x84,0xCC,0xA8,0x60,0x6F,0xC4};
+uint8_t mac[] = {u tryna do sumn?};
 //ESPNowW espNow;
 //--------------------------------------------------
 //msg structure
