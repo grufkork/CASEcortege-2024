@@ -14,8 +14,11 @@
 #define MOTORB_PIN A4
 #define DEAD_MAN_PIN A6
 
+//this variable is used in steering_with_mode_switch
+bool button_clicked = false;
+int steering_mode = 1;
 
-uint8_t receiver_mac[] = {say sike mf};
+uint8_t receiver_mac[] = {you thought, mf};
 
 //create data struct to send
 struct data{
@@ -40,10 +43,26 @@ void setup() {
 
 }
 
-void loop() {
+bool buttonPress(){
+    int buttonPressed = 0;
+    for(int i = 0; i < 5; i++){
+        buttonPressed += analogRead(DEAD_MAN_PIN) / 5;
+    }
+    if(buttonPressed > 3200){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+// There are two different ways of steering the vehicle
+//steering with deadman means that the switch at the back of the controller acts as a dead-mans switch.
+// The logic here is annoying and faulty. 
+void steering_with_deadman(){
     //read analog values and set them to the data struct
-    int topdeadzone = 1500;
-    int bottomdeadzone = 600;
+    int topdeadzone = 2000;
+    int bottomdeadzone = 1000;
 
     int buttonPressed = 0;
 
@@ -68,8 +87,6 @@ void loop() {
         // we can only go backward if BOTH motors are set to go still (forward = 0) or backwards (forward = 1)
         // if forward is set to 2, we can only go forward.
         
-
-        //PROBLEMET ÄR HÄR. vi sätter värdet till 0 och mappar det vilket alltid ger 60
 
 
         if(motorB_val > bottomdeadzone && motorB_val < topdeadzone && motorA_val > bottomdeadzone && motorA_val < topdeadzone){
@@ -142,6 +159,53 @@ void loop() {
 
    
 
+}
+
+
+//there are four different steering modes.
+//1. go forward
+//2. left motor forward, right backward
+//3. left motor backward, right forward
+//4. both backward
+void steering_with_mode_switch(){
+
+    int bottomdeadzone = 100;
+
+
+    int motorA_val = constrain(analogRead(MOTORA_PIN), 0, 4095);
+    int motorB_val = constrain(analogRead(MOTORB_PIN), 0, 4095);
+
+
+    if(buttonPress() && motorA_val == 0 && motorB_val == 0){
+
+        if(steering_mode = 4){
+            steering_mode = 0;
+        }
+        steering_mode += 1;
+
+        while(buttonPress){ //wait for user to let go
+            //hold
+            data.motorA = 0;
+            data.motorB = 0;
+            data.forward = 0;
+        }
+
+    }
+
+    data.motorA = map(motorA_val, 0, 4095, 0, 127);
+    data.motorB = map(motorA_val, 0, 4095, 0, 127);
+    data.forward = steering_mode;
+
+
+    if (button_clicked == false){ //meaning we go forward
+
+    }
+}
+
+
+void loop() {
+
+    steering_with_deadman();
 
     uint8_t *dataBytes = (uint8_t *)&data;
     int dataSize = sizeof(data);

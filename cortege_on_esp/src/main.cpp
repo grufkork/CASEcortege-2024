@@ -68,22 +68,31 @@ void setup() {
 
 
 void loop() {
+
   previous_motorA_speed = motorA_speed;
   previous_motorB_speed = motorB_speed;
-  if(forward == 2) {
+  if(forward == 1) {
     motorA_speed_desired = motorA_speed_desired;
     motorB_speed_desired = motorB_speed_desired;
   }
-  else if(forward == 1){
+  else if(forward == 2){
+    motorA_speed_desired = motorA_speed_desired;
+    motorB_speed_desired = -motorB_speed_desired;
+
+  }
+  else if(forward == 3){
+    motorA_speed_desired = -motorA_speed_desired;
+    motorB_speed_desired = motorB_speed_desired;
+
+  }
+  else if(forward == 4){
     motorA_speed_desired = -motorA_speed_desired;
     motorB_speed_desired = -motorB_speed_desired;
 
   }
   else{
-    motorA_speed_desired = 0;
-    motorB_speed_desired = 0;
+    
   }
-
     motorA_speed += (motorA_speed_desired-motorA_speed)*acceleration_constant;
     motorB_speed += (motorB_speed_desired-motorB_speed)*acceleration_constant;
     
