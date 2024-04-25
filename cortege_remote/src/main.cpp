@@ -18,7 +18,7 @@
 bool button_clicked = false;
 int steering_mode = 1;
 
-uint8_t receiver_mac[] = {you thought, mf};
+uint8_t receiver_mac[] = {0x84,0xCC,0xA8,0x60,0x6F,0xC4};
 
 //create data struct to send
 struct data{
@@ -176,19 +176,21 @@ void steering_with_mode_switch(){
     int motorB_val = constrain(analogRead(MOTORB_PIN), 0, 4095);
 
 
-    if(buttonPress() && motorA_val == 0 && motorB_val == 0){
+    if(buttonPress()){
 
-        if(steering_mode = 4){
+        if(steering_mode == 4){
             steering_mode = 0;
         }
         steering_mode += 1;
 
-        while(buttonPress){ //wait for user to let go
+        while(buttonPress()){ //wait for user to let go
             //hold
             data.motorA = 0;
             data.motorB = 0;
             data.forward = 0;
         }
+
+        delay(0); //debounce
 
     }
 
@@ -196,16 +198,12 @@ void steering_with_mode_switch(){
     data.motorB = map(motorA_val, 0, 4095, 0, 127);
     data.forward = steering_mode;
 
-
-    if (button_clicked == false){ //meaning we go forward
-
-    }
 }
 
 
 void loop() {
 
-    steering_with_deadman();
+    steering_with_mode_switch();
 
     uint8_t *dataBytes = (uint8_t *)&data;
     int dataSize = sizeof(data);
@@ -214,5 +212,6 @@ void loop() {
 
     ESPNow.send_message(receiver_mac, dataBytes, dataSize);
     
+    Serial.println(data.forward);
 
 }

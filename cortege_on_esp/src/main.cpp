@@ -26,7 +26,7 @@ SabertoothSimplified DRIVER;
 //COMMUNICATION STUFF ------------------------------
 
 //mac address of the receiver
-uint8_t mac[] = {u tryna do sumn?};
+uint8_t mac[] = {0x84,0xCC,0xA8,0x60,0x6F,0xC4};
 //ESPNowW espNow;
 //--------------------------------------------------
 //msg structure
@@ -76,18 +76,18 @@ void loop() {
     motorB_speed_desired = motorB_speed_desired;
   }
   else if(forward == 2){
-    motorA_speed_desired = motorA_speed_desired;
+    motorA_speed_desired = -motorA_speed_desired;
     motorB_speed_desired = -motorB_speed_desired;
 
   }
   else if(forward == 3){
-    motorA_speed_desired = -motorA_speed_desired;
-    motorB_speed_desired = motorB_speed_desired;
+    motorA_speed_desired = motorA_speed_desired;
+    motorB_speed_desired = -motorB_speed_desired;
 
   }
   else if(forward == 4){
     motorA_speed_desired = -motorA_speed_desired;
-    motorB_speed_desired = -motorB_speed_desired;
+    motorB_speed_desired = motorB_speed_desired;
 
   }
   else{
