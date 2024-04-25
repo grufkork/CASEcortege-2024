@@ -4,6 +4,7 @@ use std::sync::mpsc::channel;
 use std::thread;
 use std::{thread::sleep, time::Duration};
 use std::net::{UdpSocket, SocketAddr};
+use std::env;
 
 use serialport::UsbPortInfo;
 use toy_arms::external::{read, Process};
@@ -12,25 +13,34 @@ use inputbot::{KeySequence, KeybdKey::*, MouseButton::*};
 // This program presses keys for the Arduino and fetches lights from the DDR clone
 
 fn main(){
+
+    println!("Usage: outfox-lights.exe [part of portname]");
     
     let (tx,rx) = channel::<u8>();
+    let args: Vec<String> = env::args().collect();
+    let mut args_iter = args.iter();
+    args_iter.next();
+
+    let portname = args_iter.next().unwrap_or(&String::new()).clone();
+
 
     thread::spawn(move ||{
         let keys = vec![UpKey, LeftKey, RightKey,DownKey , EnterKey, EscapeKey];
 
 
         let ports = serialport::available_ports().expect("No ports found!");
+
+        println!(" -- Available ports: --");
+        for port in &ports{
+            println!("{}", port.port_name);
+        }
+        println!();
+
         // println!("{:?}", ports);
-        let portname = ports.iter().find(|x| match &x.port_type {
-            serialport::SerialPortType::UsbPort(info) => {
-                if let Some(product) = &info.product{
-                    product.contains("USB-SERIAL")
-                }else{
-                    false
-                }
-            },
-            _ => false
-        } ).unwrap().port_name.clone();
+        let portname = ports.iter().find(|x| return x.port_name.contains(&portname)
+        ).expect("No such port!!").port_name.clone();
+
+        println!("Using port {portname}");
 
         let mut port = serialport::new(portname, 115200).timeout(Duration::from_millis(1000)).open().expect("Port open failed");
         port.write_data_terminal_ready(true);
