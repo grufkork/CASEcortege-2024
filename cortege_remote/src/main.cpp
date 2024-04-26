@@ -18,7 +18,7 @@
 bool button_clicked = false;
 int steering_mode = 1;
 
-uint8_t receiver_mac[] = {0x84,0xCC,0xA8,0x60,0x6F,0xC4};
+uint8_t receiver_mac[] = {0x84,0xC5,0x4A,0x6C,0x8F,0xCC}; //oooh look at me, I'm a mac address. sure hope no one spoofs me! 
 
 //create data struct to send
 struct data{
@@ -164,13 +164,13 @@ void steering_with_deadman(){
 
 //there are four different steering modes.
 //1. go forward
-//2. left motor forward, right backward
-//3. left motor backward, right forward
-//4. both backward
+//2. go backwards
+//3. push a slider forward and the car will rotate in place in the opposite direction of the slider (it feels intuitive I promise) 
+
+
 void steering_with_mode_switch(){
 
     int bottomdeadzone = 100;
-
 
     int motorA_val = constrain(analogRead(MOTORA_PIN), 0, 4095);
     int motorB_val = constrain(analogRead(MOTORB_PIN), 0, 4095);
@@ -178,13 +178,14 @@ void steering_with_mode_switch(){
 
     if(buttonPress()){
 
-        if(steering_mode == 4){
+        if(steering_mode == 3){
             steering_mode = 0;
         }
         steering_mode += 1;
 
         while(buttonPress()){ //wait for user to let go
-            //hold
+            //this does not actually send any data and when i try to send data here, it does not work.
+            //keeping this here for now, but it is not used.
             data.motorA = 0;
             data.motorB = 0;
             data.forward = 0;
@@ -195,7 +196,7 @@ void steering_with_mode_switch(){
     }
 
     data.motorA = map(motorA_val, 0, 4095, 0, 127);
-    data.motorB = map(motorA_val, 0, 4095, 0, 127);
+    data.motorB = map(motorB_val, 0, 4095, 0, 127);
     data.forward = steering_mode;
 
 }
