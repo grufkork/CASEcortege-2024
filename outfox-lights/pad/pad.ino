@@ -4,6 +4,8 @@ void setup() {
   pinMode(A2, INPUT);
   pinMode(A3, INPUT);
   pinMode(A4, INPUT);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
   Serial.begin(115200);
 }
 
@@ -18,11 +20,34 @@ float maxs[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
 int val;
 
+bool enterKey = false;
+bool escKey = false;
+
 void loop() {
   //val = analogRead(A1);
   //avgs[0] = (avgs[0]+val)/2.0f;
   //Serial.println(val);
   //return;
+
+  if(enterKey != digitalRead(2)){
+    if(enterKey){
+      Serial.write(0b10000000 + 4);
+    }else{
+      Serial.write(0b00000000 + 4);
+    }
+    Serial.flush();
+    enterKey = !enterKey;
+  }
+
+  if(escKey != digitalRead(3)){
+    if(escKey){
+      Serial.write(0b10000000 + 5);
+    }else{
+      Serial.write(0b00000000 + 5);
+    }
+    Serial.flush();
+    escKey = !escKey;
+  }
 
   for(int i = 0; i < 4; i++){
     val = analogRead(pins[i]);

@@ -25,7 +25,7 @@ fn main(){
 
 
     thread::spawn(move ||{
-        let keys = vec![UpKey, LeftKey, RightKey,DownKey , EnterKey, EscapeKey];
+        let keys = vec![DownKey, RightKey, LeftKey,UpKey , EnterKey, EscapeKey];
 
 
         let ports = serialport::available_ports().expect("No ports found!");
@@ -85,7 +85,9 @@ fn main(){
     loop{
         while let Ok(msg) = rx.try_recv(){
             let val = msg & 0b0111111;
-            lights[val as usize] = (msg & 0b10000000 > 0) as u8;
+            if val < 4{
+                lights[val as usize] = (msg & 0b10000000 > 0) as u8;
+            }
         }
         let mut vals: Vec<u8> = (0..6).map(|x| read(h, addr + x).unwrap()).collect();
         vals.extend(lights.iter());
