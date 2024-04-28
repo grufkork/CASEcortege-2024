@@ -26,7 +26,7 @@ SabertoothSimplified DRIVER;
 //COMMUNICATION STUFF ------------------------------
 
 //mac address of the receiver
-uint8_t mac[] = {u tryna do sumn?};
+uint8_t mac[] = {watcha lookin for?}; 
 //ESPNowW espNow;
 //--------------------------------------------------
 //msg structure
@@ -50,9 +50,9 @@ void onDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
 void setup() {
 
-  Serial.begin(9600);
+  //Serial.begin(9600);
   //COMMUNICATION SETUP
-
+  SabertoothTXPinSerial.begin(9600);
 
     WiFi.mode(WIFI_MODE_STA);
 
@@ -63,7 +63,7 @@ void setup() {
 }
 
   // intital setup
-  //SabertoothTXPinSerial.begin(9600);
+  
   // CALIBRATION
 
 
@@ -76,31 +76,32 @@ void loop() {
     motorB_speed_desired = motorB_speed_desired;
   }
   else if(forward == 2){
-    motorA_speed_desired = motorA_speed_desired;
+    motorA_speed_desired = -motorA_speed_desired;
     motorB_speed_desired = -motorB_speed_desired;
 
   }
   else if(forward == 3){
-    motorA_speed_desired = -motorA_speed_desired;
-    motorB_speed_desired = motorB_speed_desired;
-
-  }
-  else if(forward == 4){
-    motorA_speed_desired = -motorA_speed_desired;
-    motorB_speed_desired = -motorB_speed_desired;
-
+    if(motorA_speed_desired > motorB_speed_desired){
+      motorA_speed_desired = motorA_speed_desired;
+      motorB_speed_desired = -motorA_speed_desired;
+    }
+    else{
+      motorA_speed_desired = -motorB_speed_desired;
+      motorB_speed_desired = motorB_speed_desired;
+    }
   }
   else{
-    
+    motorA_speed_desired = 0;
+    motorB_speed_desired = 0;
   }
     motorA_speed += (motorA_speed_desired-motorA_speed)*acceleration_constant;
     motorB_speed += (motorB_speed_desired-motorB_speed)*acceleration_constant;
     
     // Serial.println(motorA_speed);
     // Serial.println(motorB_speed);
-    // DRIVER.motor(1, motorA_speed);
-    // DRIVER.motor(2, motorB_speed);
-    Serial.println(motorA_speed);
+    DRIVER.motor(2, motorA_speed);
+    DRIVER.motor(1, motorB_speed);
+    //Serial.println(motorA_speed);
     delay(10);
   
 
