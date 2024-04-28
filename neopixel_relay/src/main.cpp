@@ -3,7 +3,7 @@
 
 
 #define LEDS 60
-#define PIN 4
+#define PIN 3
 
 CRGB leds[LEDS];
 
