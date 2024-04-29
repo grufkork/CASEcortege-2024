@@ -75,7 +75,7 @@ void loop() {
       }else{
         cooldown[i] ++;
       }*/
-    }else if(key[i] && avgs[i] <= -170.0f * maxs[i] / 450.0f ){
+    }else if(key[i] && avgs[i] <= -170.0f * maxs[i] / 650.0f ){
       key[i] = false;
       Serial.write(0b00000000 + i);
       Serial.flush();
