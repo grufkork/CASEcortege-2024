@@ -2,8 +2,8 @@
 #include <FastLED.h>
 
 
-#define LEDS 60
-#define PIN 4
+#define LEDS 354
+#define PIN 3
 
 CRGB leds[LEDS];
 
@@ -15,7 +15,7 @@ void setup() {
   leds[0]=CRGB::Red;
   leds[1]=CRGB::Red;
   FastLED.show();
-  delay(10000);
+  delay(1000);
 }
 
 int i = 0;
