@@ -20,13 +20,14 @@ float previous_motorB_speed = 0;
 float acceleration_constant = 0.005;
 float slow_down_constant = 0.008;
 
+
 SabertoothSimplified DRIVER;
 //--------------------------------------------------
 
 //COMMUNICATION STUFF ------------------------------
 
 //mac address of the receiver
-uint8_t mac[] = {watcha lookin for?}; 
+uint8_t mac[] = {lookin for sumn????};
 //ESPNowW espNow;
 //--------------------------------------------------
 //msg structure
@@ -37,13 +38,17 @@ struct data{
 } data;
 
 
+unsigned long lastDataReceivedTime = 0;
+const unsigned long dataTimeout = 1000; // 1 second timeout
+bool force_reset = false;
+
 //callback function
 void onDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&data, incomingData, sizeof(data));
   forward = data.forward;
   motorA_speed_desired = data.motorA;
   motorB_speed_desired = data.motorB;
-
+  lastDataReceivedTime = millis();
 
 }
 
@@ -69,36 +74,45 @@ void setup() {
 
 void loop() {
 
-  previous_motorA_speed = motorA_speed;
-  previous_motorB_speed = motorB_speed;
-  if(forward == 1) {
-    motorA_speed_desired = motorA_speed_desired;
-    motorB_speed_desired = motorB_speed_desired;
+  if(millis() - lastDataReceivedTime > dataTimeout) {
+    force_reset = true;
   }
-  else if(forward == 2){
-    motorA_speed_desired = -motorA_speed_desired;
-    motorB_speed_desired = -motorB_speed_desired;
-
-  }
-  else if(forward == 3){
-    if(motorA_speed_desired > motorB_speed_desired){
+  if(!force_reset){
+    previous_motorA_speed = motorA_speed;
+    previous_motorB_speed = motorB_speed;
+    if(forward == 1) {
       motorA_speed_desired = motorA_speed_desired;
-      motorB_speed_desired = -motorA_speed_desired;
-    }
-    else{
-      motorA_speed_desired = -motorB_speed_desired;
       motorB_speed_desired = motorB_speed_desired;
     }
+    else if(forward == 2){
+      motorA_speed_desired = -motorA_speed_desired;
+      motorB_speed_desired = -motorB_speed_desired;
+
+    }
+    else if(forward == 3){
+      if(motorA_speed_desired > motorB_speed_desired){
+        motorA_speed_desired = motorA_speed_desired;
+        motorB_speed_desired = -motorA_speed_desired;
+      }
+      else{
+        motorA_speed_desired = -motorB_speed_desired;
+        motorB_speed_desired = motorB_speed_desired;
+      }
+    }
+    else{
+      motorA_speed_desired = 0;
+      motorB_speed_desired = 0;
+    }
+      motorA_speed += (motorA_speed_desired-motorA_speed)*acceleration_constant;
+      motorB_speed += (motorB_speed_desired-motorB_speed)*acceleration_constant;
   }
   else{
-    motorA_speed_desired = 0;
-    motorB_speed_desired = 0;
+    motorA_speed += (0-motorA_speed)*slow_down_constant;
+    motorB_speed += (0-motorB_speed)*slow_down_constant;
   }
-    motorA_speed += (motorA_speed_desired-motorA_speed)*acceleration_constant;
-    motorB_speed += (motorB_speed_desired-motorB_speed)*acceleration_constant;
-    
-    // Serial.println(motorA_speed);
-    // Serial.println(motorB_speed);
+
+      // Serial.println(motorA_speed);
+      // Serial.println(motorB_speed);
     DRIVER.motor(2, motorA_speed);
     DRIVER.motor(1, motorB_speed);
     //Serial.println(motorA_speed);
