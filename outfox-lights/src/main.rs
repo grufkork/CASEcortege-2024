@@ -51,10 +51,26 @@ fn main(){
             port.read_exact(&mut buf).unwrap();
             println!("Got {:?}", buf);
             for byte in &buf{
+                // let mut byte = *byte;
+                // if keys[(byte & 0b0111111) as usize] == LeftKey{
+                //     if byte & 0b10000000 > 0{
+                //         byte -= 0b10000000;
+                //     }else{
+                //         byte += 0b10000000;
+                //     }
+                //
+                //
+                // }
                 tx.send(*byte);
 
-                let val = byte & 0b0111111;
-                if byte & 0b10000000 > 0{
+                let mut val = byte & 0b0111111;
+
+                if keys[val as usize] == LeftKey{
+
+                }
+                
+
+                if (byte & 0b10000000 > 0) {
                     println!("press {:?}", keys[val as usize]);
                     keys[val as usize].press();
                 }else{
