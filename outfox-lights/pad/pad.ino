@@ -1,3 +1,5 @@
+//#define DEBUG
+
 void setup() {
   // put your setup code here, to run once:
   pinMode(A1, INPUT);
@@ -8,6 +10,7 @@ void setup() {
   pinMode(3, INPUT_PULLUP);
   Serial.begin(115200);
 }
+
 
 int pins[] = {A1, A2, A3, A4};
 
@@ -22,6 +25,14 @@ int val;
 
 bool enterKey = false;
 bool escKey = false;
+
+int n = 0;
+
+const float PRESSFORCE = 1500.0f;
+const float RELEASEFORCE = 1000.0f;
+const float PRESSCOMPENSATION = 1.2f;
+const float RELEASEFORCE_COMPENSATED = RELEASEFORCE / (PRESSFORCE * PRESSCOMPENSATION);
+
 
 void loop() {
   //val = analogRead(A1);
@@ -52,33 +63,46 @@ void loop() {
   for(int i = 0; i < 4; i++){
     val = analogRead(pins[i]);
 
-    avgs[i] = (avgs[i]+val-509)*0.9f;
+    avgs[i] = (avgs[i]+val-509)*0.95f;
 
+    #ifdef DEBUG
+    if(n <= 0 && i == 0){
+      Serial.println(avgs[i]);
+      n=50;
+    }
+    n--;
+    #endif
     /*if(cooldown[i] > 0){
       cooldown[i]--;
       continue;
     }*/
 
+    // While a key is held, store the highest value.
+    // This is later used to scale the release sensitivity, so a harder press requires a harder release 
     if(key[i]){
       if(maxs[i] < avgs[i]){
         maxs[i] = avgs[i];
       }
     }
 
-    if(avgs[i] >= 450.0f && !key[i]){
-      maxs[i] = 450.0f;
+    if(avgs[i] >= 1500.0f && !key[i]){
+      maxs[i] = 1500.0f; // Reset the max level to a baseline
       key[i] = true;
+      #ifndef DEBUG
       Serial.write(0b10000000 + i);
       Serial.flush();
+      #endif
       /*
       if(cooldown[i] > 5){
       }else{
         cooldown[i] ++;
       }*/
-    }else if(key[i] && avgs[i] <= -170.0f * maxs[i] / 650.0f ){
+    }else if(key[i] && avgs[i] <= -RELEASEFORCE_COMPENSATED * maxs[i] ){
       key[i] = false;
+      #ifndef DEBUG
       Serial.write(0b00000000 + i);
       Serial.flush();
+      #endif
       /*if(cooldown[i] > 5){
       }else{
         cooldown[i] ++;
